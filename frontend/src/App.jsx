@@ -8,18 +8,14 @@ function App() {
   const handleText = (e) => {
     setText(e.target.value);
   }
-  const sendMessage = () => {
+  const sendMessage = (e) => {
+    e.preventDefault();
     socket.emit('message', text)
 
   }
 
-
-
-  useEffect(() => {
   socket.on("connect", () => {
     console.log(`socket connected: ${socket.connected}`)
-  })
-
   })
 
 

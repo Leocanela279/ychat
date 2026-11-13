@@ -21,7 +21,11 @@ io.on('connection', (socket) => {
   console.log(`socket connected: ${socket.id}`);
 
   socket.on('message', (msg) => {
+    if (msg.trim() === "") {
+      return;
+    }
     console.log(`message received: ${msg}`)
+    socket.broadcast.emit("message", msg)
   })
 })
 

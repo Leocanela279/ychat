@@ -5,31 +5,55 @@ const socket = io('http://localhost:3000');
 
 function App() {
   const [text, setText] = useState("");
+  const [messages, setMessages] = useState([]);
 
   const handleText = (e) => {
     setText(e.target.value);
   }
   const sendMessage = (e) => {
     e.preventDefault();
+    if (text.trim() === "") {
+      return
+    }
+
     socket.emit('message', text)
+    setMessages((prev) => [...prev,text])
+    setText("")
 
   }
 
+
+
   useEffect(() => {
-    socket.on("connect", () => {
-      console.log(`socket connected: ${socket.connected}`)
-    })
+
+    const handleMessages = (msg) => {
+      setMessages((prev) => [...prev, msg])
+    }
+
+    socket.on('message', handleMessages)
 
 
+    return () => {
+
+
+      socket.off("message", handleMessages)
+    }
  },[])
 
 
   return (
     <>
       <form onSubmit={sendMessage}>
-        <input onInput={handleText} type="text" name="message" placeholder='send a message' />
+        <input value={text} onChange={handleText} type="text" name="message" placeholder='send a message' />
         <button>send</button>
       </form>
+
+      {messages.map((msg,i) => (
+        // Aquí va el elemento JSX
+        <li key={i}>
+          {msg}
+        </li>
+      ))}
     </>
   )
 }

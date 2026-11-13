@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client'
 import './index.css'
+const socket = io('http://localhost:3000');
+
 function App() {
-  const socket = io('http://localhost:3000');
   const [text, setText] = useState("");
 
   const handleText = (e) => {
@@ -14,9 +15,13 @@ function App() {
 
   }
 
-  socket.on("connect", () => {
-    console.log(`socket connected: ${socket.connected}`)
-  })
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log(`socket connected: ${socket.connected}`)
+    })
+
+
+ },[])
 
 
   return (
